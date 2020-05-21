@@ -33,7 +33,7 @@ school_data_complete = pd.merge(student_data, school_data, how="left", on=["scho
 District Summary
 
 I will create a high level snapshot (in table form) of the district's key metrics, including:
-
+ 
   * Total Schools
   * Total Students
   * Total Budget
@@ -125,15 +125,269 @@ district_summary
 
 School Summary
 
-Create an overview table that summarizes key metrics about each school, including:
+I will create an overview table that summarizes key metrics about each school, including:
 
-School Name
-School Type
-Total Students
-Total School Budget
-Per Student Budget
-Average Math Score
-Average Reading Score
-% Passing Math
-% Passing Reading
-Overall Passing Rate (Average of the above two)
+ * School Name
+ * School Type
+ * Total Students
+ * Total School Budget
+ * Per Student Budget
+ * Average Math Score
+ * Average Reading Score
+ * % Passing Math
+ * % Passing Reading
+ * Overall Passing Rate (Average of the above two)
+
+- - - 
+```python
+# Determine the School Type
+school_types = school_data.set_index(["school_name"])["type"]
+
+# Calculate the total student count
+per_school_counts = school_data_complete["school_name"].value_counts()
+
+# Calculate the total school budget and per capita spending
+per_school_budget = school_data_complete.groupby(["school_name"]).mean()["budget"]
+per_school_capita = per_school_budget / per_school_counts
+
+# Calculate the average test scores
+per_school_math = school_data_complete.groupby(["school_name"]).mean()["math_score"]
+per_school_reading = school_data_complete.groupby(["school_name"]).mean()["reading_score"]
+
+# Calculate the passing scores by creating a filtered data frame
+school_passing_math = school_data_complete[(school_data_complete["math_score"] > 70)]
+school_passing_reading = school_data_complete[(school_data_complete["reading_score"] > 70)]
+
+per_school_passing_math = school_passing_math.groupby(["school_name"]).count()["student_name"] / per_school_counts * 100
+per_school_passing_reading = school_passing_reading.groupby(["school_name"]).count()["student_name"] / per_school_counts * 100
+overall_passing_rate = (per_school_passing_math + per_school_passing_reading) / 2
+```
+
+Once again after creating the columns and values for the data frame I will create the data frame.
+
+```python
+# Convert to data frame
+per_school_summary = pd.DataFrame({"School Type": school_types,
+                                   "Total Students": per_school_counts,
+                                   "Total School Budget": per_school_budget,
+                                   "Per Student Budget": per_school_capita,
+                                   "Average Math Score": per_school_math,
+                                   "Average Reading Score": per_school_reading,
+                                   "% Passing Math": per_school_passing_math,
+                                   "% Passing Reading": per_school_passing_reading,
+                                   "% Overall Passing Rate": overall_passing_rate})
+
+# Minor data munging
+per_school_summary = per_school_summary[["School Type", "Total Students", "Total School Budget", "Per Student Budget",
+                                         "Average Math Score", "Average Reading Score",
+                                         "% Passing Math", "% Passing Reading",
+                                         "% Overall Passing Rate"]]
+per_school_summary["Total School Budget"] = per_school_summary["Total Students"].map("${:,.2f}".format)
+per_school_summary["Per Student Budget"] = per_school_summary["Per Student Budget"].map("${:,.2f}".format)
+
+# Display the data frame
+per_school_summary
+```
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>School Type</th>
+      <th>Total Students</th>
+      <th>Total School Budget</th>
+      <th>Per Student Budget</th>
+      <th>Average Math Score</th>
+      <th>Average Reading Score</th>
+      <th>% Passing Math</th>
+      <th>% Passing Reading</th>
+      <th>% Overall Passing Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Bailey High School</th>
+      <td>District</td>
+      <td>4976</td>
+      <td>$3,124,928.00</td>
+      <td>$628.00</td>
+      <td>77.048432</td>
+      <td>81.033963</td>
+      <td>66.680064</td>
+      <td>81.933280</td>
+      <td>74.306672</td>
+    </tr>
+    <tr>
+      <th>Cabrera High School</th>
+      <td>Charter</td>
+      <td>1858</td>
+      <td>$1,081,356.00</td>
+      <td>$582.00</td>
+      <td>83.061895</td>
+      <td>83.975780</td>
+      <td>94.133477</td>
+      <td>97.039828</td>
+      <td>95.586652</td>
+    </tr>
+    <tr>
+      <th>Figueroa High School</th>
+      <td>District</td>
+      <td>2949</td>
+      <td>$1,884,411.00</td>
+      <td>$639.00</td>
+      <td>76.711767</td>
+      <td>81.158020</td>
+      <td>65.988471</td>
+      <td>80.739234</td>
+      <td>73.363852</td>
+    </tr>
+    <tr>
+      <th>Ford High School</th>
+      <td>District</td>
+      <td>2739</td>
+      <td>$1,763,916.00</td>
+      <td>$644.00</td>
+      <td>77.102592</td>
+      <td>80.746258</td>
+      <td>68.309602</td>
+      <td>79.299014</td>
+      <td>73.804308</td>
+    </tr>
+    <tr>
+      <th>Griffin High School</th>
+      <td>Charter</td>
+      <td>1468</td>
+      <td>$917,500.00</td>
+      <td>$625.00</td>
+      <td>83.351499</td>
+      <td>83.816757</td>
+      <td>93.392371</td>
+      <td>97.138965</td>
+      <td>95.265668</td>
+    </tr>
+    <tr>
+      <th>Hernandez High School</th>
+      <td>District</td>
+      <td>4635</td>
+      <td>$3,022,020.00</td>
+      <td>$652.00</td>
+      <td>77.289752</td>
+      <td>80.934412</td>
+      <td>66.752967</td>
+      <td>80.862999</td>
+      <td>73.807983</td>
+    </tr>
+    <tr>
+      <th>Holden High School</th>
+      <td>Charter</td>
+      <td>427</td>
+      <td>$248,087.00</td>
+      <td>$581.00</td>
+      <td>83.803279</td>
+      <td>83.814988</td>
+      <td>92.505855</td>
+      <td>96.252927</td>
+      <td>94.379391</td>
+    </tr>
+    <tr>
+      <th>Huang High School</th>
+      <td>District</td>
+      <td>2917</td>
+      <td>$1,910,635.00</td>
+      <td>$655.00</td>
+      <td>76.629414</td>
+      <td>81.182722</td>
+      <td>65.683922</td>
+      <td>81.316421</td>
+      <td>73.500171</td>
+    </tr>
+    <tr>
+      <th>Johnson High School</th>
+      <td>District</td>
+      <td>4761</td>
+      <td>$3,094,650.00</td>
+      <td>$650.00</td>
+      <td>77.072464</td>
+      <td>80.966394</td>
+      <td>66.057551</td>
+      <td>81.222432</td>
+      <td>73.639992</td>
+    </tr>
+    <tr>
+      <th>Pena High School</th>
+      <td>Charter</td>
+      <td>962</td>
+      <td>$585,858.00</td>
+      <td>$609.00</td>
+      <td>83.839917</td>
+      <td>84.044699</td>
+      <td>94.594595</td>
+      <td>95.945946</td>
+      <td>95.270270</td>
+    </tr>
+    <tr>
+      <th>Rodriguez High School</th>
+      <td>District</td>
+      <td>3999</td>
+      <td>$2,547,363.00</td>
+      <td>$637.00</td>
+      <td>76.842711</td>
+      <td>80.744686</td>
+      <td>66.366592</td>
+      <td>80.220055</td>
+      <td>73.293323</td>
+    </tr>
+    <tr>
+      <th>Shelton High School</th>
+      <td>Charter</td>
+      <td>1761</td>
+      <td>$1,056,600.00</td>
+      <td>$600.00</td>
+      <td>83.359455</td>
+      <td>83.725724</td>
+      <td>93.867121</td>
+      <td>95.854628</td>
+      <td>94.860875</td>
+    </tr>
+    <tr>
+      <th>Thomas High School</th>
+      <td>Charter</td>
+      <td>1635</td>
+      <td>$1,043,130.00</td>
+      <td>$638.00</td>
+      <td>83.418349</td>
+      <td>83.848930</td>
+      <td>93.272171</td>
+      <td>97.308869</td>
+      <td>95.290520</td>
+    </tr>
+    <tr>
+      <th>Wilson High School</th>
+      <td>Charter</td>
+      <td>2283</td>
+      <td>$1,319,574.00</td>
+      <td>$578.00</td>
+      <td>83.274201</td>
+      <td>83.989488</td>
+      <td>93.867718</td>
+      <td>96.539641</td>
+      <td>95.203679</td>
+    </tr>
+    <tr>
+      <th>Wright High School</th>
+      <td>Charter</td>
+      <td>1800</td>
+      <td>$1,049,400.00</td>
+      <td>$583.00</td>
+      <td>83.682222</td>
+      <td>83.955000</td>
+      <td>93.333333</td>
+      <td>96.611111</td>
+      <td>94.972222</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
