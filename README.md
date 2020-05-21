@@ -6,6 +6,15 @@ This project uses Python, Pandas, and Numpy to give key metrics and analysis on 
 In this role I have become the Data Analysts for Py city's school district. In this capacity, I will be helping the school board and mayor make strategic decisions regarding future school budgets and priorities.
 I've been asked to analyze the district-wide standardized test results. I was granted access to every student's math and reading scores, as well as various information on the schools they attend. My responsibility is to aggregate the data to and showcase obvious trends in school performance.
 
+## Analysis 
+* As a whole, schools with higher budgets, did not yield better test results. By contrast, schools with higher spending per student actually ($645-675) underperformed compared to schools with smaller budgets (&lt;\$585 per student).
+
+* As a whole, smaller and medium sized schools dramatically out-performed large sized schools on passing math performances (89-91% passing vs 67%).
+
+* As a whole, charter schools out-performed the public district schools across all metrics. However, more analysis will be required to glean if the effect is due to school practices or the fact that charter schools tend to serve smaller student populations per school.
+
+- - -
+
 ### Prerequisites
 
 ```python 
@@ -387,5 +396,192 @@ per_school_summary
 </table>
 </div>
 
+## Top Performing Schools (By Passing Rate)
 
+Create a table that highlights the top 5 performing schools based on Overall Passing Rate. Include:
 
+ * School Name
+ * School Type
+ * Total Students
+ * Total School Budget
+ * Per Student Budget
+ * Average Math Score
+ * Average Reading Score
+ * % Passing Math
+ * % Passing Reading
+ * Overall Passing Rate (Average of the above two)
+
+- - - 
+```python
+# Sort and show top five schools
+top_schools = per_school_summary.sort_values(["% Overall Passing Rate"], ascending=False)
+top_schools.head(5)
+```
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>School Type</th>
+      <th>Total Students</th>
+      <th>Total School Budget</th>
+      <th>Per Student Budget</th>
+      <th>Average Math Score</th>
+      <th>Average Reading Score</th>
+      <th>% Passing Math</th>
+      <th>% Passing Reading</th>
+      <th>% Overall Passing Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Wilson High School</th>
+      <td>Charter</td>
+      <td>2283</td>
+      <td>$1,319,574.00</td>
+      <td>$578.00</td>
+      <td>83.274201</td>
+      <td>83.989488</td>
+      <td>93.867718</td>
+      <td>96.539641</td>
+      <td>95.203679</td>
+    </tr>
+    <tr>
+      <th>Pena High School</th>
+      <td>Charter</td>
+      <td>962</td>
+      <td>$585,858.00</td>
+      <td>$609.00</td>
+      <td>83.839917</td>
+      <td>84.044699</td>
+      <td>94.594595</td>
+      <td>95.945946</td>
+      <td>95.270270</td>
+    </tr>
+    <tr>
+      <th>Wright High School</th>
+      <td>Charter</td>
+      <td>1800</td>
+      <td>$1,049,400.00</td>
+      <td>$583.00</td>
+      <td>83.682222</td>
+      <td>83.955000</td>
+      <td>93.333333</td>
+      <td>96.611111</td>
+      <td>94.972222</td>
+    </tr>
+    <tr>
+      <th>Cabrera High School</th>
+      <td>Charter</td>
+      <td>1858</td>
+      <td>$1,081,356.00</td>
+      <td>$582.00</td>
+      <td>83.061895</td>
+      <td>83.975780</td>
+      <td>94.133477</td>
+      <td>97.039828</td>
+      <td>95.586652</td>
+    </tr>
+    <tr>
+      <th>Holden High School</th>
+      <td>Charter</td>
+      <td>427</td>
+      <td>$248,087.00</td>
+      <td>$581.00</td>
+      <td>83.803279</td>
+      <td>83.814988</td>
+      <td>92.505855</td>
+      <td>96.252927</td>
+      <td>94.379391</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+- - - 
+## Bottom Performing Schools (By Passing Rate)
+
+```python
+# Sort and show bottom five schools
+bottom_schools = per_school_summary.sort_values(["% Overall Passing Rate"], ascending=True)
+bottom_schools.head(5)
+```
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>School Type</th>
+      <th>Total Students</th>
+      <th>Total School Budget</th>
+      <th>Per Student Budget</th>
+      <th>Average Math Score</th>
+      <th>Average Reading Score</th>
+      <th>% Passing Math</th>
+      <th>% Passing Reading</th>
+      <th>% Overall Passing Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Rodriguez High School</th>
+      <td>District</td>
+      <td>3999</td>
+      <td>$2,547,363.00</td>
+      <td>$637.00</td>
+      <td>76.842711</td>
+      <td>80.744686</td>
+      <td>66.366592</td>
+      <td>80.220055</td>
+      <td>73.293323</td>
+    </tr>
+    <tr>
+      <th>Huang High School</th>
+      <td>District</td>
+      <td>2917</td>
+      <td>$1,910,635.00</td>
+      <td>$655.00</td>
+      <td>76.629414</td>
+      <td>81.182722</td>
+      <td>65.683922</td>
+      <td>81.316421</td>
+      <td>73.500171</td>
+    </tr>
+    <tr>
+      <th>Johnson High School</th>
+      <td>District</td>
+      <td>4761</td>
+      <td>$3,094,650.00</td>
+      <td>$650.00</td>
+      <td>77.072464</td>
+      <td>80.966394</td>
+      <td>66.057551</td>
+      <td>81.222432</td>
+      <td>73.639992</td>
+    </tr>
+    <tr>
+      <th>Figueroa High School</th>
+      <td>District</td>
+      <td>2949</td>
+      <td>$1,884,411.00</td>
+      <td>$639.00</td>
+      <td>76.711767</td>
+      <td>81.158020</td>
+      <td>65.988471</td>
+      <td>80.739234</td>
+      <td>73.363852</td>
+    </tr>
+    <tr>
+      <th>Hernandez High School</th>
+      <td>District</td>
+      <td>4635</td>
+      <td>$3,022,020.00</td>
+      <td>$652.00</td>
+      <td>77.289752</td>
+      <td>80.934412</td>
+      <td>66.752967</td>
+      <td>80.862999</td>
+      <td>73.807983</td>
+    </tr>
+  </tbody>
+</table>
