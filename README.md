@@ -30,7 +30,7 @@ school_data_complete = pd.merge(student_data, school_data, how="left", on=["scho
 ```
 - - - 
 
-District Summary
+## District Summary
 
 I will create a high level snapshot (in table form) of the district's key metrics, including:
  
@@ -120,10 +120,8 @@ district_summary
 </table>
 </div>
 
-
-
-
-School Summary
+- - - 
+## School Summary
 
 I will create an overview table that summarizes key metrics about each school, including:
 
